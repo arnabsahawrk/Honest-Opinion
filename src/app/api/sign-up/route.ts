@@ -14,6 +14,7 @@ export async function POST(request: Request) {
       isVerified: true,
     });
 
+    //if the username is found and verified then return
     if (existingUserVerifiedByUsername) {
       return Response.json(
         {
@@ -29,7 +30,7 @@ export async function POST(request: Request) {
     const existingUserByEmail = await UserModel.findOne({ email });
     const hashedPassword = await bcrypt.hash(password, 10);
     const verifyCode = Math.floor(1000 + Math.random() * 9000).toString();
-
+    //if email is exist then a few modification or new user
     if (existingUserByEmail) {
       existingUserByEmail.password = hashedPassword;
       existingUserByEmail.verifyCode = verifyCode;
@@ -60,7 +61,7 @@ export async function POST(request: Request) {
       username,
       verifyCode
     );
-
+    //if email response is not succeed
     if (!emailResponse.success) {
       return Response.json(
         {
