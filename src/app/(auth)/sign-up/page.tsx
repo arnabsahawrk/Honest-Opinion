@@ -20,13 +20,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader } from "lucide-react";
 
 const SignUp = () => {
   const [username, setUserName] = useState("");
   const [usernameMessage, setUserNameMessage] = useState("");
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const debounced = useDebounceCallback(setUserName, 300);
   const { toast } = useToast();
@@ -100,10 +101,10 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
-        <div className="text-center">
-          <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
+    <main className="flex justify-center items-center min-h-screen bg-myCustom-bgPrimary px-4">
+      <div className="w-full max-w-md p-8 space-y-8 bg-myCustom-textPrimary rounded-lg shadow-md">
+        <div className="text-center text-myCustom-textSecondary">
+          <h1 className="text-3xl lg:text-4xl font-extrabold tracking-tight mb-2">
             Join Honest Opinion
           </h1>
           <p className="mb-4">Sign up to start your anonymous adventure</p>
@@ -116,10 +117,12 @@ const SignUp = () => {
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel className="text-myCustom-textSecondary">
+                    Username
+                  </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="username"
+                      placeholder="Username"
                       {...field}
                       onChange={(e) => {
                         field.onChange(e);
@@ -127,7 +130,7 @@ const SignUp = () => {
                       }}
                     />
                   </FormControl>
-                  {isCheckingUsername && <Loader2 className="animate-spin" />}
+                  {isCheckingUsername && <Loader className="animate-spin" />}
                   <p
                     className={`text-sm ${
                       usernameMessage === "Username is unique"
@@ -147,33 +150,53 @@ const SignUp = () => {
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel className="text-myCustom-textSecondary">
+                    Email
+                  </FormLabel>
                   <FormControl>
-                    <Input placeholder="email" {...field} />
+                    <Input placeholder="Email address" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             {/* password  */}
-            <FormField
-              name="password"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" placeholder="password" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="relative">
+              <FormField
+                name="password"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-myCustom-textSecondary">
+                      Password
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type={`${showPassword ? "text" : "password"}`}
+                        placeholder="Password"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <span
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-2.5 bottom-2.5"
+              >
+                {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
+              </span>
+            </div>
             {/* sign up */}
-            <Button type="submit" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-myCustom-textSecondary text-myCustom-textPrimary"
+            >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="mr-2 size-4 animate-spin" />
+                  <Loader className="mr-2 size-4 animate-spin" />
                 </>
               ) : (
                 "Sign Up"
@@ -181,16 +204,19 @@ const SignUp = () => {
             </Button>
           </form>
         </Form>
-        <div className="text-center mt-4">
+        <div className="text-center mt-4 text-myCustom-textSecondary">
           <p>
             Already a member?{" "}
-            <Link href="/sing-in" className="text-blue-600 hover:text-blue-800">
+            <Link
+              href="/sing-in"
+              className="text-myCustom-bgPrimary hover:text-opacity-80 font-bold"
+            >
               Sign In
             </Link>
           </p>
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 
