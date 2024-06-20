@@ -161,33 +161,37 @@ const SignUp = () => {
               )}
             />
             {/* password  */}
-            <div className="relative">
-              <FormField
-                name="password"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-myCustom-textSecondary">
-                      Password
-                    </FormLabel>
-                    <FormControl>
+            <FormField
+              name="password"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-myCustom-textSecondary">
+                    Password
+                  </FormLabel>
+                  <FormControl>
+                    <div className="relative">
                       <Input
                         type={`${showPassword ? "text" : "password"}`}
                         placeholder="Password"
                         {...field}
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <span
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-2.5 bottom-2.5"
-              >
-                {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
-              </span>
-            </div>
+                      <span
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-2.5 bottom-2.5 cursor-pointer"
+                      >
+                        {showPassword ? (
+                          <Eye size={18} />
+                        ) : (
+                          <EyeOff size={18} />
+                        )}
+                      </span>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             {/* sign up */}
             <Button
               type="submit"
@@ -208,7 +212,7 @@ const SignUp = () => {
           <p>
             Already a member?{" "}
             <Link
-              href="/sing-in"
+              href="/sign-in"
               className="text-myCustom-bgPrimary hover:text-opacity-80 font-bold"
             >
               Sign In
