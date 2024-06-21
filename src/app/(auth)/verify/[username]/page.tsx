@@ -18,8 +18,11 @@ import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { useState } from "react";
+import { Loader } from "lucide-react";
 
 const VerifyAccount = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const params = useParams<{ username: string }>();
   const { toast } = useToast();
@@ -30,6 +33,7 @@ const VerifyAccount = () => {
   });
 
   const onSubmit = async (data: z.infer<typeof verifySchema>) => {
+    setIsSubmitting(true);
     try {
       const { data: response } = await axios.post("/api/verify-code", {
         username: params.username,
@@ -52,6 +56,8 @@ const VerifyAccount = () => {
         description: axiosError.response?.data.message,
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
   return (
@@ -81,10 +87,17 @@ const VerifyAccount = () => {
               )}
             />
             <Button
+              disabled={isSubmitting}
               className="bg-myCustom-textSecondary text-myCustom-textPrimary"
               type="submit"
             >
-              Submit
+              {isSubmitting ? (
+                <>
+                  <Loader className="mr-2 size-4 animate-spin" />
+                </>
+              ) : (
+                "Verify"
+              )}
             </Button>
           </form>
         </Form>

@@ -196,7 +196,7 @@ const SignUp = () => {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="bg-myCustom-textSecondary text-myCustom-textPrimary"
+              className="bg-myCustom-textSecondary text-myCustom-textPrimary w-full"
             >
               {isSubmitting ? (
                 <>
