@@ -1,30 +1,39 @@
 import { NextRequest, NextResponse } from "next/server";
-export { default } from "next-auth/middleware";
 import { getToken } from "next-auth/jwt";
 
 export async function middleware(request: NextRequest) {
-  const token = await getToken({ req: request });
-  const url = request.nextUrl;
+  // Get the token
+  const token = request.cookies.get("next-auth.session-token");
+  // const token = await getToken({ req: request });
+  console.log("Token:", token); // Add debugging statement to log the token
 
-  //if the user successfully sign-in then prevent the user to go in these paths
+  // Destructure the URL
+  const url = request.nextUrl;
+  const { pathname } = url;
+
+  // Debugging URL and token
+  console.log("URL Pathname:", pathname);
+  console.log("Token Present:", Boolean(token));
+
+  // If the user is signed in, prevent access to sign-in, sign-up, verify, or home pages
   if (
     token &&
-    (url.pathname.startsWith("/sign-in") ||
-      url.pathname.startsWith("/sign-up") ||
-      url.pathname.startsWith("/verify") ||
-      url.pathname.startsWith("/"))
+    (pathname.startsWith("/sign-in") ||
+      pathname.startsWith("/sign-up") ||
+      pathname.startsWith("/verify") ||
+      pathname === "/")
   ) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  //if the user don't have any token then I send the in sign-in path
-  if (!token && url.pathname.startsWith("/dashboard")) {
-    return NextResponse.redirect(new URL("sign-in", request.url));
+  // If the user is not signed in, redirect them to the sign-in page when accessing the dashboard
+  if (!token && pathname.startsWith("/dashboard")) {
+    return NextResponse.redirect(new URL("/sign-in", request.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/sign-in", "/sing-up", "/", "/dashboard/:path*", "/verify/:path*"],
+  matcher: ["/sign-in", "/sign-up", "/", "/dashboard/:path*", "/verify/:path*"],
 };

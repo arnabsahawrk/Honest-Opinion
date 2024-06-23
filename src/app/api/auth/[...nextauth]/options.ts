@@ -24,11 +24,13 @@ export const authOptions: NextAuthOptions = {
           });
 
           if (!user) {
+            console.error("No User found with this email");
             throw new Error("No User found with this email");
           }
 
           if (!user.isVerified) {
-            throw new Error("Pleas verify your account before login");
+            console.error("Please verify your account before login");
+            throw new Error("Please verify your account before login");
           }
 
           const isPasswordCorrect = await bcrypt.compare(
@@ -39,10 +41,12 @@ export const authOptions: NextAuthOptions = {
           if (isPasswordCorrect) {
             return user;
           } else {
+            console.error("Incorrect Password");
             throw new Error("Incorrect Password");
           }
         } catch (err: any) {
-          throw new Error(err);
+          console.error("Error in authorization:", err.message);
+          throw new Error(err.message);
         }
       },
     }),

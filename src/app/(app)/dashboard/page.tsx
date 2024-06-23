@@ -14,13 +14,16 @@ import axios, { AxiosError } from "axios";
 import { Loader, RefreshCcw } from "lucide-react";
 import { User } from "next-auth";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import loadingImage from "../../icon.png";
 
 const Dashboard = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSwitchLoading, setIsSwitchLoading] = useState(false);
+  const [profileUrl, setProfileUrl] = useState("");
 
   const { toast } = useToast();
 
@@ -44,7 +47,7 @@ const Dashboard = () => {
     try {
       const { data } = await axios.get<ApiResponse>("/api/accept-messages");
 
-      setValue("acceptMessages", data.isAcceptingMessage);
+      setValue("acceptMessages", data.isAcceptingMessages);
     } catch (error) {
       console.error("Failed to fetch message settings", error);
 
@@ -81,7 +84,6 @@ const Dashboard = () => {
         console.error("Failed to fetch latest messages", error);
 
         const axiosError = error as AxiosError<ApiResponse>;
-
         toast({
           title: "Error",
           description:
@@ -102,6 +104,13 @@ const Dashboard = () => {
 
     fetchMessages();
     fetchAcceptMessage();
+
+    // Set profile URL only on the client side
+    if (typeof window !== "undefined") {
+      const baseUrl = `${window.location.protocol}//${window.location.host}`;
+      const username = session.user.username;
+      setProfileUrl(`${baseUrl}/arnabsahawrk/${username}`);
+    }
   }, [session, setValue, fetchAcceptMessage, fetchMessages]);
 
   //handle switch change
@@ -112,7 +121,6 @@ const Dashboard = () => {
       });
 
       setValue("acceptMessages", !acceptMessages);
-
       toast({
         title: "Status",
         description: data.message,
@@ -133,10 +141,6 @@ const Dashboard = () => {
     }
   };
 
-  const { username } = session?.user as User;
-  const baseUrl = `${window.location.protocol}//${window.location.host}`;
-  const profileUrl = `${baseUrl}/arnabsahawrk/${username}`;
-
   const copyToClipboard = () => {
     navigator.clipboard.writeText(profileUrl);
 
@@ -148,63 +152,93 @@ const Dashboard = () => {
   };
 
   if (!session || !session.user) {
-    return <div>Please Sign In</div>;
+    return (
+      <main className="w-screen min-h-[calc(100vh-128px)] flex flex-col justify-center items-center bg-myCustom-textPrimary">
+        <Image
+          src={loadingImage}
+          alt="loading"
+          width="100"
+          height="100"
+          className="object-fit animate-bounce"
+        />
+      </main>
+    );
   }
 
   return (
-    <main className="my-8 mx-auto p-6 bg-myCustom-bgPrimary container text-myCustom-textSecondary">
-      <h1 className="text-3xl lg:text-4xl font-bold mb-4">Dashboard</h1>
+    <main className="text-myCustom-textPrimary bg-myCustom-bgPrimary min-h-[calc(100vh-128px)]">
+      <section className="mx-auto p-6  container ">
+        <h1 className="text-3xl lg:text-4xl font-bold mb-4">Dashboard</h1>
 
-      <div className="mb-4">
-        <h2 className="text-lg font-semibold mb-2">Copy Your Unique Link</h2>
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold mb-2">Copy Your Unique Link</h2>
 
-        <div className="flex items-center gap-2">
-          <Input type="text" value={profileUrl} disabled />
-          <Button onClick={copyToClipboard}>Copy</Button>
-        </div>
-      </div>
-
-      <div className="mb-4">
-        <Switch
-          {...register("acceptMessages")}
-          checked={acceptMessages}
-          onCheckedChange={handleSwitchChange}
-          disabled={isSwitchLoading}
-        />
-        <span className="ml-2">
-          Accept Messages: {acceptMessages ? "On" : "Off"}
-        </span>
-      </div>
-      <Separator />
-
-      <Button
-        className="mt-4"
-        variant="outline"
-        onClick={(e) => {
-          e.preventDefault();
-          fetchMessages(true);
-        }}
-      >
-        {isLoading ? (
-          <Loader className="size-4 animate-spin" />
-        ) : (
-          <RefreshCcw className="size-4" />
-        )}
-      </Button>
-
-      <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-        {messages.length > 0 ? (
-          messages.map((message, index) => (
-            <MessageCard
-              key={index}
-              message={message}
-              onMessageDelete={handleDeleteMessage}
+          <div className="flex items-center gap-2">
+            <Input
+              type="text"
+              value={profileUrl}
+              readOnly
+              className="text-myCustom-textSecondary font-semibold tracking-widest bg-none focus-visible:ring-0"
             />
-          ))
-        ) : (
-          <p>No messages to display</p>
-        )}
-      </div>
+            <Button
+              className="bg-myCustom-textPrimary text-myCustom-textSecondary font-semibold hover:bg-myCustom-textPrimary hover:scale-95 transition duration-300"
+              onClick={copyToClipboard}
+            >
+              Copy
+            </Button>
+          </div>
+        </div>
+
+        <div className="mb-4 flex items-center">
+          <Switch
+            {...register("acceptMessages")}
+            checked={acceptMessages}
+            onCheckedChange={handleSwitchChange}
+            disabled={isSwitchLoading}
+          />
+          <span className="ml-2">
+            Accept Messages: {acceptMessages ? "On" : "Off"}
+          </span>
+        </div>
+        <Separator />
+
+        <Button
+          className="mt-4"
+          variant="outline"
+          onClick={(e) => {
+            e.preventDefault();
+            fetchMessages(true);
+          }}
+        >
+          {isLoading ? (
+            <Loader className="size-4 animate-spin" />
+          ) : (
+            <RefreshCcw className="size-4 text-myCustom-textSecondary" />
+          )}
+        </Button>
+
+        <div
+          className={`mt-4 ${
+            messages.length > 0
+              ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
+              : "text-center"
+          }`}
+        >
+          {messages.length > 0 ? (
+            messages.map((message, index) => (
+              <MessageCard
+                key={index}
+                message={message}
+                onMessageDelete={handleDeleteMessage}
+              />
+            ))
+          ) : (
+            <p className="text-xl font-semibold tracking-widest">
+              No messages found to display
+            </p>
+          )}
+        </div>
+      </section>
     </main>
   );
 };

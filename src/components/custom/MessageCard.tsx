@@ -4,6 +4,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -35,6 +36,7 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
   const { toast } = useToast();
 
   const handleDeleteConfirm = async () => {
+    onMessageDelete(message._id as string);
     const { data } = await axios.delete<ApiResponse>(
       `/api/delete-message/${message._id}`
     );
@@ -45,34 +47,47 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Card Title</CardTitle>
+    <Card className="bg-myCustom-textPrimary">
+      <CardHeader className="p-1">
         <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="destructive">
-              <X className="size-5" />
+          <AlertDialogTrigger
+            asChild
+            className="translate-y-[-40%] translate-x-[-50%]"
+          >
+            <Button variant="destructive" className="size-fit p-2">
+              <X className="text-myCustom-textPrimary size-6" />
             </Button>
           </AlertDialogTrigger>
-          <AlertDialogContent>
+          <AlertDialogContent className="bg-myCustom-textPrimary">
             <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete your
-                account and remove your data from our servers.
+              <AlertDialogTitle className="text-myCustom-bgPrimary">
+                Are you absolutely sure?
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-myCustom-textSecondary font-semibold">
+                This action cannot be undone. This will permanently delete this
+                message.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDeleteConfirm}>
-                Continue
+              <AlertDialogAction
+                onClick={handleDeleteConfirm}
+                className="bg-myCustom-textSecondary text-myCustom-textPrimary"
+              >
+                Delete
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-        <CardDescription>Card Description</CardDescription>
       </CardHeader>
-      <CardContent></CardContent>
+      <CardContent>
+        <CardDescription className="text-justify text-myCustom-textSecondary text-xl font-semibold">
+          <p>{message.content}</p>
+        </CardDescription>
+      </CardContent>
+      <CardFooter>
+        <p>{new Date(message.createdAt).toLocaleString()}</p>
+      </CardFooter>
     </Card>
   );
 };

@@ -70,6 +70,7 @@ export async function GET(request: Request) {
 
   const session = await getServerSession(authOptions);
   const user: User = session?.user as User;
+  console.log(user);
 
   //if no session found || no user found
   if (!session || !session.user) {
