@@ -2,18 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 export async function middleware(request: NextRequest) {
+  const secret = process.env.NEXT_AUTH_SECRET;
   // Get the token
-  const token = request.cookies.get("next-auth.session-token");
-  // const token = await getToken({ req: request });
-  console.log("Token:", token); // Add debugging statement to log the token
+  const token = await getToken({ req: request, secret });
+
+  console.log("Token:", token);
 
   // Destructure the URL
   const url = request.nextUrl;
   const { pathname } = url;
-
-  // Debugging URL and token
-  console.log("URL Pathname:", pathname);
-  console.log("Token Present:", Boolean(token));
 
   // If the user is signed in, prevent access to sign-in, sign-up, verify, or home pages
   if (
