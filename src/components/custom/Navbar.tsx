@@ -13,9 +13,7 @@ const Navbar = () => {
   return (
     <nav className="p-4 shadow-md bg-myCustom-bgSecondary text-myCustom-textPrimary">
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
-        <a className="text-2xl font-bold mb-4 md:mb-0" href="#">
-          Honest Opinion
-        </a>
+        <p className="text-2xl font-bold mb-4 md:mb-0">Honest Opinion</p>
         {session ? (
           <>
             <span className="mr-4">
