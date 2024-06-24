@@ -21,8 +21,11 @@ import { Button } from "@/components/ui/button";
 import { Loader } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
+import Chatbot from "@/components/custom/Chatbot";
+import { Separator } from "@/components/ui/separator";
 
 const AnonymousMessage = () => {
+  const [aiMessage, setAiMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const params = useParams<{ username: string }>();
   const { toast } = useToast();
@@ -61,44 +64,51 @@ const AnonymousMessage = () => {
 
   return (
     <main className="text-myCustom-textPrimary bg-myCustom-bgSecondary ">
-      <section className="container mx-auto px-4 md:px-24 py-12 min-h-screen">
-        <h1 className="text-center font-bold text-3xl">Public Profile Link</h1>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              name="content"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    Send Anonymous Message to @{params.username}
-                  </FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Write your opinion here"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button
-              disabled={isSubmitting}
-              className="bg-myCustom-textPrimary text-myCustom-textSecondary font-semibold hover:bg-myCustom-textPrimary hover:scale-95 transition duration-300"
-              type="submit"
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader className="mr-2 size-4 animate-spin" />
-                </>
-              ) : (
-                "Send"
-              )}
-            </Button>
-          </form>
-        </Form>
-        <div className="text-center mt-32">
+      <section className="container mx-auto px-4 md:px-24 py-12 min-h-screen flex flex-col justify-between">
+        <div>
+          <h1 className="text-center font-bold text-3xl">
+            Public Profile Link
+          </h1>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                name="content"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Send Anonymous Message to @{params.username}
+                    </FormLabel>
+                    <FormControl>
+                      <Textarea
+                        defaultValue={aiMessage}
+                        placeholder="Write your opinion here"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                disabled={isSubmitting}
+                className="bg-myCustom-textPrimary text-myCustom-textSecondary font-semibold hover:bg-myCustom-textPrimary hover:scale-95 transition duration-300"
+                type="submit"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader className="mr-2 size-4 animate-spin" />
+                  </>
+                ) : (
+                  "Send"
+                )}
+              </Button>
+            </form>
+          </Form>
+          <Separator className="my-5" />
+        </div>
+        <Chatbot setAiMessage={setAiMessage} />
+        <div className="text-center">
           <p className="mb-2 text-lg">Get Your Message Board</p>
           <Link href="/sign-up">
             <Button className="bg-myCustom-textPrimary text-myCustom-textSecondary font-semibold hover:bg-myCustom-textPrimary hover:scale-95 transition duration-300">
