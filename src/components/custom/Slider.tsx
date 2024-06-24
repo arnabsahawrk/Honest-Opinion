@@ -1,5 +1,5 @@
 "use client";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { Mail } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { IMessage } from "@/model/User";
 import axios, { AxiosError } from "axios";
 import { ApiResponse } from "@/types/ApiResponse";
@@ -17,9 +17,8 @@ const Slider = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchMessages = useCallback(async () => {
+  const fetchMessages = async () => {
     setIsLoading(true);
-
     try {
       const { data } = await axios.get<ApiResponse>("/api/get-all-messages");
       setMessages(data.messages || []);
@@ -31,11 +30,11 @@ const Slider = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [setIsLoading, setMessages]);
+  };
 
   useEffect(() => {
     fetchMessages();
-  }, [fetchMessages]);
+  }, []);
 
   return (
     <>
