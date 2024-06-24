@@ -36,7 +36,7 @@ export default function VerificationEmail({
       </Head>
       <Preview>Here&apos;s your verification code: {otp}</Preview>
       <Tailwind>
-        <Section className="text-center bg-[#DA0037] rounded-xl text-[#EDEDED] p-4 w-full max-w-[600px]">
+        <Section className="text-center bg-myCustom-bgPrimary rounded-xl text-myCustom-textPrimary p-4 w-full max-w-[600px]">
           <Row>
             <Heading as="h2" className="text-2xl mt-2">
               Hello {username}
