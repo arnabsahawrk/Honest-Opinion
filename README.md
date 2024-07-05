@@ -4,8 +4,11 @@ Honest Opinion is a social chat application that allows users to receive anonymo
 
 <strong>This project focuses on functionality and user validation, ensuring a seamless and secure user experience.</strong>
 
-<!-- ## Visualizing the Project in Action -->
-<!-- Add a link to a demo video or image of your project here -->
+## Visualizing the Project in Action
+
+<a href="https://github.com/arnabsahawrk/Honest-Opinion/raw/main/videos/my-first-video%20.mp4" style="display: inline-block; padding: 8px 16px; background-color: #1B1A55; color: #EDEDED; text-align: center; text-decoration: none; border-radius: 4px; font-size: 16px;">
+  Watch Video
+</a>
 
 ## Key Features
 
